@@ -1,0 +1,16 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+Watchlist: {{ user.username}}
+{% endblock %}
+{% block body %}
+{% if user.is_authenticated %}
+<h2>Added to Watchlist:</h2>
+<ol>
+	{% for watched in watchlist %}
+	<li>
+		<a href="view_listing/{{watched.listing_id}}">{{watched.title}}</a>
+	</li>
+	{% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

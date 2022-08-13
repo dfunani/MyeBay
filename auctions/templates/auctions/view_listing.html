@@ -1,0 +1,61 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+{{listing.title}}
+{% endblock %}
+{% block body %}
+<h3>{{listing.title}}</h3>
+<h6> Seller: {{listing.username}}</h6>
+<img src="{{listing.image_URL}}" alt="{{listing.title}}" width="300" height="300">
+<div>{{listing.description}}</div>
+<div>${{listing.Starting_bid}}</div>
+<div>{{listing.category}}</div>
+<br>
+{% if listing.closed == True %}
+Auction Winner: {% if bids.user_id == user.id %} You have won this Auction {% else %} {{bids.username}} {% endif %}
+{% endif %}
+
+{% if user.is_authenticated and listing.closed == False %}
+<form action="{{listing.id}}" method="post">
+	{% csrf_token %}
+	<input name="list_title" type="text" style="display: None" value="{{listing.title}}">
+	<input id="watchlist" name="watch_list" type="submit" value="Watchlist"
+		style="{% if watchlist.watched %} color:yellow; border-color:yellow; {% endif %} font-weight:bold">
+</form>
+<br>
+Highest Bid: {{bids.bid_amount}} by {{bids.username}}
+<form action="{{listing.id}}" method="post">
+	{% csrf_token %}
+	<input name="bid" type="number" min="{{max_bid}}" step=".01">
+	<input type="submit" value="Bid">
+</form>
+<br>
+{% if listing.user_id == user.id %}
+<form action="{{listing.id}}" method="post">
+	{% csrf_token %}
+	<input type="submit" name="close" value="Close Listing">
+</form>
+{% endif %}
+{% endif %}
+<br>
+{% if user.is_authenticated %}
+<form action="{{listing.id}}" method="post">
+	{% csrf_token %}
+	<input type="text" name="comment_title">
+	<input type="text" name="comment">
+	<button>
+		Add Comment
+	</button>
+</form>
+{% endif %}
+
+<h4>Comments</h4>
+{% for comment in comments %}
+<H6>{{comment.title}}</H6>
+By {{comment.username}} <br>
+Comment: {{comment.comment}}
+<br>
+<br>
+{% endfor %}
+
+
+{% endblock %}
